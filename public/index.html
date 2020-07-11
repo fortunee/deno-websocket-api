@@ -127,7 +127,7 @@
       e.preventDefault();
 
       let msg = chatForm.msg.value;
-      ws.send(JSON.stringify({ name, msg }));
+      wsConn.send(JSON.stringify({ name, msg }));
     })
   </script>
 </body>
