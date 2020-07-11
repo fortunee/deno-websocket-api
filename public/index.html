@@ -108,6 +108,27 @@
   </div>
   <script>
     let wsConn = new WebSocket('ws://localhost:3000/ws');
+
+    const nameForm = document.querySelector('.name-form');
+    const chatroom = document.querySelector('.chatroom');
+    const chatList = document.querySelector('.chat-list');
+    const chatForm = document.querySelector('.chat-form');
+
+    let name = 'anonymous';
+    nameForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      name = nameForm.nickname.value;
+      nameForm.classList.add('hidden');
+      chatroom.classList.remove('hidden');
+    })
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      let msg = chatForm.msg.value;
+      ws.send(JSON.stringify({ name, msg }));
+    })
   </script>
 </body>
 
