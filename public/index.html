@@ -94,12 +94,7 @@
     </form>
 
     <div class="chatroom hidden">
-      <ul class="chat-list">
-        <li>
-          <div class="name">fortune</div>
-          <div class="msg">What's y'all! :)</div>
-        </li>
-      </ul>
+      <ul class="chat-list"></ul>
       <form class="chat-form">
         <input type="text" name="msg" placeholder="Type your chat here..." required>
         <button>Send</button>
@@ -129,6 +124,21 @@
       let msg = chatForm.msg.value;
       wsConn.send(JSON.stringify({ name, msg }));
     })
+
+    const receivedMessage = ({ data }) => {
+      const { name, msg } = JSON.parse(data);
+
+      let template = `
+        <li>
+          <div class="name">${name}</div>
+          <div class="msg">${msg}</div>
+        </li>
+      `;
+
+      chatList.innerHTML += template;
+    }
+
+    wsConn.addEventListener('message',  receivedMessage);
   </script>
 </body>
 
