@@ -3,29 +3,28 @@ import { v4 } from 'https://deno.land/std/uuid/mod.ts';
 
 let sockets = new Map<string, WebSocket>();
 
-interface IBroadcast {
+interface IMessage {
   name: string
   msg: string
 }
-const broadCast = (eventMsg: IBroadcast) => {
+const broadcastMsg = (msg: IMessage) => {
   sockets.forEach((ws: WebSocket) => {
-    ws.send(JSON.stringify(eventMsg));
+    ws.send(JSON.stringify(msg));
   })
 }
 
 const chatConn = async (ws: WebSocket) => {
-  const randomUniqueId = v4.generate();
-  sockets.set(randomUniqueId, ws);
+  const randomUid = v4.generate();
+  sockets.set(randomUid, ws);
 
-  for await (const e of ws) {
+  for await (const eventMsg of ws) {
 
-    if (isWebSocketCloseEvent(e)) {
-      sockets.delete(randomUniqueId);
+    if (isWebSocketCloseEvent(eventMsg)) {
+      sockets.delete(randomUid);
     }
 
-    if (typeof e === 'string') {
-      let eventMsg = JSON.parse(e);
-      broadCast(eventMsg)
+    if (typeof eventMsg === 'string') {
+      broadcastMsg(JSON.parse(eventMsg))
     }
   }
 }
